@@ -1,6 +1,15 @@
+const dotenv = require("dotenv");
+dotenv.config()
+
 const mongoose = require('mongoose');
 const express = require("express");
 const app = express();
+
+process.env.MONGODB_URI = 'mongodb+srv://joshuanikolass:Bebee0904.@joshuanikolass.8y5s8.mongodb.net/Foods?retryWrites=true&w=majority&appName=joshuanikolass'
+mongoose.connection.on("connected", () => {
+    console.log(`Connected to MongoDB`);
+  });
+  
 
 const foodSchema = new mongoose.Schema({
   name: { type: String, required: true },
