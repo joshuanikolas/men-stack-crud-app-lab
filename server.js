@@ -18,10 +18,14 @@ app.get("/", async (req, res) => {
   res.send("TESTING");
 });
 
-
 app.get("/", async (req, res) => {
   res.render("index.ejs");
 });
+
+app.get("/foods/new", (req, res) => {
+  res.render("fruits/new.ejs");
+});
+
 
 
 
