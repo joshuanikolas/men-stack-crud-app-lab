@@ -1,30 +1,72 @@
 const dotenv = require("dotenv");
-dotenv.config(); 
+dotenv.config();
 const express = require("express");
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); 
+const methodOverride = require("method-override"); 
+const morgan = require("morgan");
 
 const app = express();
 
-//mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on("connected", () => {
-  console.log(`Connected to MongoDB`);
+  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
 const Food = require("./models/food.js");
+app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method")); 
+app.use(morgan("dev"));
 
 
-
-app.get("/", async (req, res) => {
-  res.send("TESTING");
-});
 
 app.get("/", async (req, res) => {
   res.render("index.ejs");
 });
 
-app.get("/foods/new", (req, res) => {
-  res.render("fruits/new.ejs");
+app.get("/foods", async (req, res) => {
+  const allFoods = await Food.find();
+  console.log(allFoods);
+  res.render("foods/index.ejs", { foods: allFoods});
 });
+
+
+app.get("/foods/new", (req, res) => {
+  res.render("foods/new.ejs");
+});
+
+app.post("/foods", async (req, res) => {
+  console.log(req.body);
+  res.redirect("/foods/new");
+});
+
+app.post("/foods", async (req, res) => {
+  if (req.body.isReadyToEat === "on") {
+    req.body.isReadyToEat = true;
+  } else {
+    req.body.isReadyToEat = false;
+  }
+  await Food.create(req.body);
+  res.redirect("/foods");
+});
+
+app.get("/foods/:foodId", async (req, res) => {
+  const foundFood = await Food.findById(req.params.foodId);
+  res.render(`This route renders the show page for food id: ${req.params.foodId}!`
+  );
+});
+
+app.delete("/foods/:foodId", async (req, res) => {
+  await Food.findByIdAndDelete(req.params.foodId);
+  res.redirect("/foods");
+});
+
+app.get("/foods/:foodId/edit", async (req, res) => {
+  const foundFood = await Food.findById(req.params.foodId);
+  res.render("fruits/edit.ejs", {fruit: foundFruit,});
+});
+
+
+
 
 
 
@@ -34,31 +76,3 @@ app.get("/foods/new", (req, res) => {
 app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
