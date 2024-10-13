@@ -18,7 +18,6 @@ app.use(methodOverride("_method"));
 app.use(morgan("dev"));
 
 
-
 app.get("/", async (req, res) => {
   res.render("index.ejs");
 });
@@ -27,7 +26,6 @@ app.get("/foods", async (req, res) => {
   const allFoods = await Food.find();
   res.render("foods/index.ejs", { foods: allFoods});
 });
-
 
 app.get("/foods/new", (req, res) => {
   res.render("foods/new.ejs");
@@ -58,17 +56,15 @@ app.get("/foods/:foodId/edit", async (req, res) => {
   res.render("foods/edit.ejs", {food: foundFood,});
 });
 
-
 app.put("/foods/:foodId", async (req, res) => {
   if (req.body.isReadyToEat === "on") {
     req.body.isReadyToEat = true;
   } else {
     req.body.isReadyToEat = false;
   }
-  await food.findByIdAndUpdate(req.params.foodId, req.body);
+  await Food.findByIdAndUpdate(req.params.foodId, req.body);
   res.redirect(`/foods/${req.params.foodId}`);
 });
-
 
 app.listen(3000, () => {
   console.log("Listening on port 3000");
