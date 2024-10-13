@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit your Favorite Food</title>
+</head>
+<body>
+    <h1>Edit <%= food.name %></h1>
+    <form action="/foods/<%=food._id%>?_method=PUT" method="POST"></form>
+    <label for="name">Name:</label>
+    <input type="text" name="name" value="<%= food.name %>" />
+      <label for="isReadyToEat">Ready to Eat?</label>
+      <input type="checkbox" name="isReadyToEat" <% if (food.isReadyToEat) { %>checked<% } %> >
+      <button type="submit">Update your favorite food</button>
+    </form>
+    <a href="/foods">Back to Your favorite foods</a>
+  </body>
+  

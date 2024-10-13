@@ -25,18 +25,12 @@ app.get("/", async (req, res) => {
 
 app.get("/foods", async (req, res) => {
   const allFoods = await Food.find();
-  console.log(allFoods);
   res.render("foods/index.ejs", { foods: allFoods});
 });
 
 
 app.get("/foods/new", (req, res) => {
   res.render("foods/new.ejs");
-});
-
-app.post("/foods", async (req, res) => {
-  console.log(req.body);
-  res.redirect("/foods/new");
 });
 
 app.post("/foods", async (req, res) => {
@@ -51,8 +45,7 @@ app.post("/foods", async (req, res) => {
 
 app.get("/foods/:foodId", async (req, res) => {
   const foundFood = await Food.findById(req.params.foodId);
-  res.render(`This route renders the show page for food id: ${req.params.foodId}!`
-  );
+  res.render("foods/show.ejs", {food: foundFood});
 });
 
 app.delete("/foods/:foodId", async (req, res) => {
@@ -62,15 +55,19 @@ app.delete("/foods/:foodId", async (req, res) => {
 
 app.get("/foods/:foodId/edit", async (req, res) => {
   const foundFood = await Food.findById(req.params.foodId);
-  res.render("fruits/edit.ejs", {fruit: foundFruit,});
+  res.render("foods/edit.ejs", {food: foundFood,});
 });
 
 
-
-
-
-
-
+app.put("/foods/:foodId", async (req, res) => {
+  if (req.body.isReadyToEat === "on") {
+    req.body.isReadyToEat = true;
+  } else {
+    req.body.isReadyToEat = false;
+  }
+  await food.findByIdAndUpdate(req.params.foodId, req.body);
+  res.redirect(`/foods/${req.params.foodId}`);
+});
 
 
 app.listen(3000, () => {
